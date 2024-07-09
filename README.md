@@ -1,1 +1,1 @@
-master branch alway new springBoot project 
+master branch always new springBoot project 
