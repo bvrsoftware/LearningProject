@@ -1,5 +1,8 @@
 package com.bvr.LearningProject.controller;
 
+import com.bvr.LearningProject.enums.Authorities;
+import com.bvr.LearningProject.enums.UserRoles;
+import com.bvr.LearningProject.model.Authority;
 import com.bvr.LearningProject.model.CustomUser;
 import com.bvr.LearningProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class LoginController {

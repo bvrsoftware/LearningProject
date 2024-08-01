@@ -1,5 +1,7 @@
 package com.bvr.LearningProject.config;
 
+import com.bvr.LearningProject.enums.Authorities;
+import com.bvr.LearningProject.enums.UserRoles;
 import com.bvr.LearningProject.filter.CsrfCookieFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
@@ -31,32 +33,37 @@ public class ProjectSecurityConfig {
         CsrfTokenRequestAttributeHandler csrfToken = new CsrfTokenRequestAttributeHandler();
         csrfToken.setCsrfRequestAttributeName("_csrf");
 
-        httpSecurity.securityContext((context)->context.requireExplicitSave(false))
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-                        .cors(corsCustomizer->corsCustomizer.configurationSource(new CorsConfigurationSource() {
-                            @Override
-                            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                                CorsConfiguration corsConfiguration = new CorsConfiguration();
-                                corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-                                corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
-                                corsConfiguration.setAllowCredentials(true);
-                                corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
-                                corsConfiguration.setMaxAge(3600L);
-                                return corsConfiguration;
-                            }
-                        }))
-                .csrf((csrf)->csrf.csrfTokenRequestHandler(csrfToken).ignoringRequestMatchers("/contact", "/register")
+        httpSecurity.securityContext((context) -> context.requireExplicitSave(false))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+                    CorsConfiguration corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+                    corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
+                    corsConfiguration.setAllowCredentials(true);
+                    corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
+                    corsConfiguration.setMaxAge(3600L);
+                    return corsConfiguration;
+                }))
+                .csrf((csrf) -> csrf.csrfTokenRequestHandler(csrfToken).ignoringRequestMatchers("/contact", "/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-                .authorizeHttpRequests((request)->request.requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards", "/user").authenticated()
+                .authorizeHttpRequests((request) -> request
+//                        .requestMatchers("/myAccount").hasAuthority(Authorities.VIEW_ACCOUNT.getName())
+//                        .requestMatchers("/myBalance").hasAnyAuthority(Authorities.VIEW_ACCOUNT.getName(), Authorities.VIEW_BALANCE.getName())
+//                        .requestMatchers("/myLoans").hasAuthority(Authorities.VIEW_LOANS.getName())
+//                        .requestMatchers("/myCards").hasAuthority(Authorities.VIEW_CARDS.getName())
+
+
+                        .requestMatchers("/myAccount").hasRole(UserRoles.USER.getName())
+                        .requestMatchers("/myBalance").hasAnyRole(UserRoles.USER.getName(), UserRoles.ADMIN.getName())
+                        .requestMatchers("/myLoans").hasRole(UserRoles.USER.getName())
+                        .requestMatchers("/myCards").hasRole(UserRoles.USER.getName())
+
+
+                        .requestMatchers("/user").authenticated()
                         .requestMatchers("/notices", "/contact", "/register").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
-      /*  httpSecurity.csrf((csrf) -> csrf.disable())
-                .authorizeHttpRequests((requests) -> requests.requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").authenticated()
-                        .requestMatchers("/notices", "/contact", "/register").permitAll())
-                .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults());*/
 
         return httpSecurity.build();
     }
