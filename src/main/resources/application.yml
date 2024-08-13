@@ -1,0 +1,17 @@
+
+#mysql connection details
+spring:
+  application:
+    name:LearningProject
+  datasource:
+    url: jdbc:mysql://localhost:3306/eazybank
+    username: root
+    password: 12345
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+      database-platform: org.hibernate.dialect.MySQL8Dialect
