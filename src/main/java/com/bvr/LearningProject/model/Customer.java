@@ -1,23 +1,22 @@
 package com.bvr.LearningProject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
+import java.sql.Date;
+import java.util.Set;
 
-@Getter
-@Setter
 @Entity
-@Table(name = "customer")
-public class CustomUser {
+@Getter @Setter
+public class Customer {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO,generator="native")
-    @GenericGenerator(name = "native",strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
-    private int id;
+    private long id;
 
     private String name;
 
@@ -32,6 +31,11 @@ public class CustomUser {
     private String role;
 
     @Column(name = "create_dt")
-    private String createDt;
+    @JsonIgnore
+    private Date createDt;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<Authority> authorities;
 
 }

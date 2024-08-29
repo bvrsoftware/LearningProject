@@ -1,10 +1,10 @@
-
 #mysql connection details
 spring:
   application:
-    name:LearningProject
-  profiles:
-    active: default
+    name: LearningProject
+  config:
+    activate:
+      on-profile: prod
   datasource:
     url: jdbc:mysql://localhost:3306/eazybank
     username: root
@@ -17,18 +17,14 @@ spring:
     hibernate:
       ddl-auto: update
       database-platform: org.hibernate.dialect.MySQL8Dialect
-  spring:
-    config:
-    import : application_prod.properties
-
 logging:
   level:
     org:
       springframework:
-        security: ${SPRING_SECURITY_LOG_LEVEL:TRACE}
+        security: ${SPRING_SECURITY_LOG_LEVEL:ERROR}
   pattern:
     console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
 server:
   servlet:
     session:
-      timeout: ${SESSION_TIMEOUT:20m}
+      timeout: ${SESSION_TIMEOUT:10m}
