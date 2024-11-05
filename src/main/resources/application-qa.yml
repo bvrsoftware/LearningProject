@@ -1,0 +1,32 @@
+spring:
+  data:
+    mongodb:
+      primary:
+        uri: mongodb://localhost:27017/gps4
+        database: gps4
+        username: gps
+        password: pulkit27
+        authentication-database: gps4
+      secondary:
+        host: localhost
+        database: gps5
+        username: gps
+        password: pulkit27
+        authentication-database: gps5
+
+gps:
+  tcp:
+    socket:
+      ip:
+        1: 52.74.44.145
+        2: 18.138.27.187
+    load:
+      ip:
+        1: 54.169.192.130
+        2: 13.251.157.228
+aws:
+  region: ap-southeast-1
+
+firestore:
+  file:
+    path: /data/firestore/tbtrackfirebase-firebase-adminsdk-3uuch-92a42e5aef.json

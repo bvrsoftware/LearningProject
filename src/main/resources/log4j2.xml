@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration monitorInterval="60">
+    <!--Setting up moniterInterval which is used for checking if the configuration file is changed if we are using external config file-->
+    <Properties>
+        <!--Setting properties as logs path with path where logs should be saved-->
+        <Property name="log-path">/data/log/jts/${sys:config.type}</Property>
+        <!--        <Property name="archived-path">/root/efs/log/tcp/${sys:config.type}</Property>-->
+    </Properties>
+
+    <!--    This filter is for case if we insert MDC/ThreadContext in particular thread-->
+    <!-- <DynamicThresholdFilter key="LOG" defaultThreshold="INFO"
+     onMatch="ACCEPT" onMismatch="NEUTRAL"/>-->
+
+    <!--    This thread wll match ThreadContext for particular string match in thread Context-->
+    <!--    <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="DENY" operator="or">-->
+    <!--        <KeyValuePair key="IMEI" value="User2"/>-->
+    <!--    </ThreadContextMapFilter>-->
+
+    <Appenders>
+        <!--Setting two appenders for testing one for console and one for File appendind-->
+        <Console name="Console-Appender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%X{IMEI}] [%t] %c{1}:%L - %m%n"/>
+        </Console>
+
+        <RollingRandomAccessFile name="Rolling-File-Appender"
+                                 bufferSize="1"
+                                 fileName="${log-path}/jts_current.log"
+                                 filePattern="${log-path}/socket_%d{dd}_%d{HH}.gz"
+                                 immediateFlush="false"><!--file pattern is the one which set time based rolling-->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%X{IMEI}] [%X{TRANS}] [%t] %c{1}:%L - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1000 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="24">
+                <Delete basePath="${log-path}" maxDepth="2">
+                    <IfLastModified age="24h"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO" includeLocation="false">
+            <!--Only root level logger is working but we can test it by changing ref to Console or File both one by one-->
+            <AppenderRef ref="Rolling-File-Appender"/>
+        </Root>
+    </Loggers>
+</Configuration>

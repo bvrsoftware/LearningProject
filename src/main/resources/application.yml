@@ -1,0 +1,12 @@
+spring:
+  application:
+  name: LearningProject
+  main:
+    web-application-type: none
+  profiles:
+#    active: prod
+    active: qa
+#    active: prod-dubai
+#    active: tblite
+
+
